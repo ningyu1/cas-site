@@ -1,4 +1,0 @@
-工程使用的是jdk1.8,这点需要注意一下
-cas版本5.0.4
-
-cas的配置参考：https://apereo.github.io/cas/5.0.x/installation/Configuration-Properties.html#warning-cookie
