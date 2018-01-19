@@ -1,0 +1,34 @@
+{
+  @class: org.apereo.cas.support.oauth.services.OAuthCallbackAuthorizeService
+  serviceId: https://cas.example.org:8443/cas/oauth2.0/callbackAuthorize.*
+  name: OAuth Callback url
+  id: 476816560948495
+  description: OAuth Wrapper Callback Url
+  evaluationOrder: -2147483648
+  logoutType: BACK_CHANNEL
+  attributeReleasePolicy:
+  {
+    @class: org.apereo.cas.services.ReturnAllAttributeReleasePolicy
+    principalAttributesRepository:
+    {
+      @class: org.apereo.cas.authentication.principal.DefaultPrincipalAttributesRepository
+      expiration: 2
+      timeUnit: HOURS
+    }
+    authorizedToReleaseCredentialPassword: false
+    authorizedToReleaseProxyGrantingTicket: false
+  }
+  multifactorPolicy:
+  {
+    @class: org.apereo.cas.services.DefaultRegisteredServiceMultifactorPolicy
+    failureMode: CLOSED
+  }
+  accessStrategy:
+  {
+    @class: org.apereo.cas.services.DefaultRegisteredServiceAccessStrategy
+    enabled: true
+    ssoEnabled: true
+    requireAllAttributes: true
+    caseInsensitive: false
+  }
+}

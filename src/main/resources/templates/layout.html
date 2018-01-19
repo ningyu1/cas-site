@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title layout:title-pattern="$CONTENT_TITLE"></title>
+
+    <link rel="stylesheet" href="css/font-awesome.min.css"/>
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{${#themes.code('standard.custom.css.file')}}"/>
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+
+    <script type="text/javascript" src="js/zxcvbn.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.min.js"></script>
+    <script src="js/api.js" async defer th:if="${recaptchaSiteKey}"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div id="container" class="container">
+    <div th:replace="fragments/logo"/>
+    <div layout:fragment="content" id="content">
+        <h1/>
+        <p/>
+    </div>
+    <div th:replace="fragments/footer"/>
+</div>
+<div th:insert="fragments/bottom"/>
+
+</body>
+</html>

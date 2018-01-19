@@ -1,0 +1,8 @@
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "*",
+  "name" : "Account",
+  "id" : 10000004,
+  "evaluationOrder" : 1,
+  "logoutType" : "BACK_CHANNEL"
+}
