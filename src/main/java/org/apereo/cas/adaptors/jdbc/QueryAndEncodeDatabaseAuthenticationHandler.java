@@ -1,9 +1,6 @@
 package org.apereo.cas.adaptors.jdbc;
 
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -19,11 +16,6 @@ import org.apereo.cas.authentication.HandlerResult;
 import org.apereo.cas.authentication.PreventedException;
 import org.apereo.cas.authentication.UsernamePasswordCredential;
 import org.apereo.cas.authentication.handler.SaltPasswordEncoder;
-import org.apereo.cas.ticket.ServiceTicketImpl;
-import org.apereo.cas.ticket.Ticket;
-import org.apereo.cas.ticket.TicketGrantingTicket;
-import org.apereo.cas.ticket.TicketGrantingTicketImpl;
-import org.apereo.cas.ticket.registry.TicketRegistry;
 import org.apereo.cas.util.ApplicationContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +44,6 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 public class QueryAndEncodeDatabaseAuthenticationHandler extends AbstractJdbcUsernamePasswordAuthenticationHandler {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
-	private List<String> userCache = new ArrayList<String>();
 
     /**
      * The Algorithm name.
@@ -126,8 +116,8 @@ public class QueryAndEncodeDatabaseAuthenticationHandler extends AbstractJdbcUse
                 throw new FailedLoginException("Password does not match value on record.");
             }
 			// 登录成功，踢掉前一个相同登录的人
-//			isValidateAlreadyLogged(username);
-//			userCache.add(username);
+            log.debug("进入踢人判断逻辑");
+            getForceLogoutManager().doLogout(username);
             return createHandlerResult(transformedCredential, this.principalFactory.createPrincipal(username), null);
 
         } catch (final IncorrectResultSizeDataAccessException e) {
@@ -141,42 +131,6 @@ public class QueryAndEncodeDatabaseAuthenticationHandler extends AbstractJdbcUse
         }
 
     }
-
-	/**
-	 * 登录成功，踢掉前一个相同登录的人
-	 * 
-	 * @param username
-	 */
-	private void isValidateAlreadyLogged(final String username) {
-		if (userCache.contains(username)) {
-			TicketRegistry ticketRegistry = (TicketRegistry) ApplicationContextProvider.getApplicationContext()
-					.getBean("ticketRegistry");
-			final Collection<Ticket> ticketsInCache = ticketRegistry.getTickets();
-			for (final Ticket ticket : ticketsInCache) {
-				TicketGrantingTicket t = null;
-				try {
-					log.info("cast TicketGrantingTicketImpl");
-					t = (TicketGrantingTicketImpl) ticket;
-				} catch (Exception e) {
-					log.error("cast TicketGrantingTicketImpl is error:", e);
-					t = ((ServiceTicketImpl) ticket).getGrantingTicket();
-				}
-				if (t.getAuthentication().getPrincipal().getId().equals(username) && t.getId() != null) {
-					/***
-					 * 注销方法一 涉及到cookie的删除，但是无法获取response 该方法有待考究 未测试
-					 */
-					// centralAuthenticationService.destroyTicketGrantingTicket(t.getId());
-					/***
-					 * 注销方法二
-					 */
-					// t.expire();
-					t.markTicketExpired();
-					ticketRegistry.deleteTicket(t.getId());
-					userCache.remove(username);
-				}
-			}
-		}
-	}
 
     /**
      * Digest encoded password.
@@ -265,6 +219,10 @@ public class QueryAndEncodeDatabaseAuthenticationHandler extends AbstractJdbcUse
 
     public void setNumberOfIterations(final long numberOfIterations) {
         this.numberOfIterations = numberOfIterations;
+    }
+    
+    public ForceLogoutManager getForceLogoutManager() {
+    	return (ForceLogoutManager) ApplicationContextProvider.getApplicationContext().getBean("forceLogoutManager");
     }
 
 }
