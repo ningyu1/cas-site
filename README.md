@@ -15,4 +15,4 @@ cas.forceLogout = false
 
 1. [CAS使用经验总结，纯干货](https://ningyu1.github.io/site/post/54-cas-server/)
 2. [CAS Server强制踢人功能实现方式](https://ningyu1.github.io/site/post/57-cas-server1/)
-3. [cas的配置参考](https://apereo.github.io/cas/5.0.x/installation/Configuration-Properties.html#warning-cookie)
+3. [CAS官方配置详解](https://apereo.github.io/cas/5.0.x/installation/Configuration-Properties.html#warning-cookie)
